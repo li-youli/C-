@@ -1,3 +1,65 @@
-<Solution>
-  <Project Path="guess/guess.csproj" />
-</Solution>
+using System;
+
+namespace NumberGuessingGame
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            // Initialize random number generator
+            Random random = new Random();
+            
+            // The target number is between 1 and 99 (based on 0 < ? < 100 range)
+            int targetNumber = random.Next(1, 100); 
+            
+            int minRange = 0;
+            int maxRange = 100;
+            int guessCount = 0;
+            bool isCorrect = false;
+
+            Console.WriteLine("======= Number Guessing Game =======");
+
+            while (!isCorrect)
+            {
+                Console.Write($"Guess number range {minRange} < ? < {maxRange} : ");
+                string input = Console.ReadLine();
+                int userGuess;
+
+                // Input validation: Loop until the user provides a valid integer
+                while (!int.TryParse(input, out userGuess))
+                {
+                    Console.WriteLine("Invalid input! Please enter a valid number.");
+                    Console.Write($"Guess number range {minRange} < ? < {maxRange} : ");
+                    input = Console.ReadLine();
+                }
+
+                // Logical validation: Ensure the guess is within the current active bounds
+                if (userGuess <= minRange || userGuess >= maxRange)
+                {
+                    Console.WriteLine("Your guess is out of the current range. Try again.");
+                    continue;
+                }
+
+                // Valid guess accepted, increment counter
+                guessCount++;
+
+                // Game logic & dynamic range updates
+                if (userGuess == targetNumber)
+                {
+                    Console.WriteLine($"Bingo! You guessed correctly, the answer is {targetNumber}");
+                    isCorrect = true;
+                }
+                else if (userGuess > targetNumber)
+                {
+                    maxRange = userGuess; // Narrow down the maximum bound
+                    Console.WriteLine($"Smaller!! You have guessed {guessCount} time(s)");
+                }
+                else
+                {
+                    minRange = userGuess; // Narrow down the minimum bound
+                    Console.WriteLine($"Larger!! You have guessed {guessCount} time(s)");
+                }
+            }
+        }
+    }
+}
