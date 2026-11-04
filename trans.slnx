@@ -1,3 +1,100 @@
-<Solution>
-  <Project Path="ConsoleApp1/ConsoleApp1.csproj" />
-</Solution>
+using System;
+
+namespace MatrixTranspose
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            int rowCount = 0;
+            int colCount = 0;
+
+            // 1. Validate Row Input
+            while (true)
+            {
+                Console.Write("Please enter the number of rows : ");
+                string input = Console.ReadLine();
+                if (int.TryParse(input, out rowCount) && rowCount > 0)
+                {
+                    break; // Valid positive number
+                }
+                Console.WriteLine("Invalid input! Please enter a valid positive integer for rows.");
+            }
+
+            // 2. Validate Column Input
+            while (true)
+            {
+                Console.Write("Please enter the number of columns : ");
+                string input = Console.ReadLine();
+                if (int.TryParse(input, out colCount) && colCount > 0)
+                {
+                    break; // Valid positive number
+                }
+                Console.WriteLine("Invalid input! Please enter a valid positive integer for columns.");
+            }
+
+            // Initialize the 2D array based on user input
+            int[,] matrix = new int[rowCount, colCount];
+
+            Console.WriteLine("Please enter the elements of each row sequentially, separated by spaces:");
+
+            // 3. Input and Validate Matrix Elements
+            for (int i = 0; i < rowCount; i++)
+            {
+                while (true)
+                {
+                    string input = Console.ReadLine();
+
+                    // Prevent empty input
+                    if (string.IsNullOrWhiteSpace(input))
+                    {
+                        Console.WriteLine("Input cannot be empty. Please try again.");
+                        continue;
+                    }
+
+                    // Split the input by spaces, ignoring extra spaces
+                    string[] tokens = input.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+                    // Validate the quantity of numbers entered
+                    if (tokens.Length != colCount)
+                    {
+                        Console.WriteLine($"Error: Expected {colCount} elements, but you entered {tokens.Length}. Please re-enter this row.");
+                        continue;
+                    }
+
+                    bool isRowValid = true;
+
+                    // Validate data type for each element
+                    for (int j = 0; j < colCount; j++)
+                    {
+                        if (!int.TryParse(tokens[j], out matrix[i, j]))
+                        {
+                            Console.WriteLine($"Error: '{tokens[j]}' is not a valid number. Please re-enter the entire row.");
+                            isRowValid = false;
+                            break; // Stop checking this row and ask for input again
+                        }
+                    }
+
+                    // If all elements in the row are valid, break the while loop and proceed to the next row (i++)
+                    if (isRowValid)
+                    {
+                        break;
+                    }
+                }
+            }
+
+            // 4. Output the Transposed Matrix
+            Console.WriteLine("Transposed 2D array :");
+            
+            // To transpose, we loop through columns first, then rows
+            for (int col = 0; col < colCount; col++)
+            {
+                for (int row = 0; row < rowCount; row++)
+                {
+                    Console.Write(matrix[row, col] + " ");
+                }
+                Console.WriteLine(); // Move to the next line after finishing one transposed row
+            }
+        }
+    }
+}
